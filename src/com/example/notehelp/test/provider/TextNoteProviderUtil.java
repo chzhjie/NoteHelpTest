@@ -2,7 +2,10 @@ package com.example.notehelp.test.provider;
 
 import java.util.Date;
 
+import android.content.Context;
+
 import com.example.notehelp.entity.BillNote;
+import com.example.notehelp.entity.BillNoteType;
 import com.example.notehelp.entity.MoneyStoreType;
 import com.example.notehelp.entity.NoteContent;
 import com.example.notehelp.utils.NoteUtils;
@@ -35,6 +38,28 @@ public class TextNoteProviderUtil extends Assert {
         billNote.billTime = new Date();
         billNote.billDesc = "购买VPN";
         return billNote;
+    }
+
+    public static BillNoteType setupBillNoteType(){
+        BillNoteType noteType = new BillNoteType();
+        noteType.noteTypeName = "娱乐";
+        noteType.noteTypeColor="AAAAAA";
+        noteType.inOrOut = 0;
+        return noteType;
+    }
+
+    public static BillNoteType setupBillNoteType2(Context context){
+        BillNoteType noteType = new BillNoteType();
+        noteType.noteTypeName = "娱乐";
+        noteType.noteTypeColor="AAAAAA";
+        noteType.inOrOut = 0;
+        noteType.save(context);
+        BillNoteType noteType2 = new BillNoteType();
+        noteType2.noteTypeName = "交通";
+        noteType2.noteTypeColor="AB6C11";
+        noteType2.inOrOut = 1;
+        noteType2.save(context);
+        return noteType2;
     }
     
     private static void assertNoteContentEqual(String caller, NoteContent expect,
@@ -73,6 +98,18 @@ public class TextNoteProviderUtil extends Assert {
         assertEquals(caller + " billStoreTYpe", expect.billMoneyType, actual.billMoneyType);
         //assertEquals(caller + " billTime", expect.billTime, actual.billTime);
         assertEquals(caller + " billDesc", expect.billDesc, actual.billDesc);
+        
+    }
+
+    public static void assertBillNoteTypeEqual(String caller, BillNoteType expect,
+            BillNoteType actual) {
+        if (expect == actual) {
+            return;
+        }
+        assertNoteContentEqual(caller, expect, actual);
+        assertEquals(caller + " noteName", expect.noteTypeName, actual.noteTypeName);
+        assertEquals(caller + " noteColor", expect.noteTypeColor, actual.noteTypeColor);
+        assertEquals(caller + " inOrOut", expect.inOrOut, actual.inOrOut);
         
     }
 }

@@ -2,12 +2,15 @@
 package com.example.notehelp.test.provider;
 
 import com.example.notehelp.entity.BillNote;
+import com.example.notehelp.entity.BillNoteType;
+import com.example.notehelp.entity.BillNoteType.NoteTypeColumns;
 import com.example.notehelp.entity.MoneyStoreType;
 import com.example.notehelp.entity.NoteContent;
 import com.example.notehelp.provider.NoteProvider;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.ProviderTestCase2;
 import android.test.mock.MockContentResolver;
@@ -78,11 +81,30 @@ public class TestNoteProvider extends ProviderTestCase2<NoteProvider> {
         TextNoteProviderUtil.assertMoneyStoreTypeEqual("testMoneyStoreSave:",moneyStoreType,moneyStoreType2);
     }
     
+    @SmallTest
     public void testBillNoteSave(){
         BillNote billNote = TextNoteProviderUtil.setupBillNote();
         billNote.save(mMockContext);
         long billNoteID = billNote.mId;
         BillNote billNote2 = BillNote.restoreBillNoteWithID(mMockContext, billNoteID);
         TextNoteProviderUtil.assertBillNoteEqual("testBillNoteSave", billNote, billNote2);
+    }
+    
+    @SmallTest
+    public void testBillNoteTypeSave(){
+        BillNoteType noteType = TextNoteProviderUtil.setupBillNoteType();
+        noteType.save(mMockContext);
+        long noteTypeId = noteType.mId;
+        BillNoteType noteType2 = BillNoteType.restoreBillNoteWithID(mMockContext, noteTypeId);
+        TextNoteProviderUtil.assertBillNoteTypeEqual("testBillNoteSave", noteType, noteType2);
+    }
+    
+    @SmallTest
+    public void testNoteTypeQuery(){
+        BillNoteType noteType = TextNoteProviderUtil.setupBillNoteType2(mMockContext);
+        String selectionString = NoteTypeColumns.NOTETYPE_INOROUR + " = ?";
+        Cursor cursor = mMockContentResolver.query(BillNoteType.CONTENT_URI_BILLNOTETYPE, BillNoteType.CONTENT_PROJECTION,selectionString ,new String[]{"1"}, null);
+        int size = cursor.getCount();
+        assertEquals(size, 1);
     }
 }
